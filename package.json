@@ -1,0 +1,29 @@
+{
+  "name": "eggjs-nacos",
+  "version": "1.0.0",
+  "description": "Egg.js nacos插件,服务注册发现，获取配置中心",
+  "author": "dq",
+  "main": "index.js",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "egg": "^2",
+    "nacos": "^2.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {},
+  "keywords": [
+    "nacos",
+    "egg-nacos",
+    "eggjs-nacos"
+  ],
+  "files": [
+    "app.js",
+    "agent.js",
+    "index.js",
+    "config"
+  ],
+  "eslintIgnore": [
+    "dist"
+  ],
+  "license": "ISC"
+}
