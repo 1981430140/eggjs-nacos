@@ -4,26 +4,51 @@
   "description": "Egg.js nacos插件,服务注册发现，获取配置中心",
   "author": "dq",
   "main": "index.js",
+  "types": "index.d.ts",
+  "egg": {},
   "dependencies": {
     "dotenv": "^8.2.0",
     "egg": "^2",
     "nacos": "^2.1.0"
   },
-  "devDependencies": {},
-  "scripts": {},
+  "devDependencies": {
+    "egg-bin": "^4.13.1"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "scripts": {
+    "test": "egg-bin test"
+  },
   "keywords": [
+    "egg",
     "nacos",
+    "nacos-node",
     "egg-nacos",
-    "eggjs-nacos"
+    "eggjs-nacos",
+    "eggPlugin",
+    "egg-plugin"
   ],
   "files": [
     "app.js",
     "agent.js",
     "index.js",
-    "config"
+    "config",
+    "index.d.ts",
+    "lib",
+    "app"
   ],
   "eslintIgnore": [
     "dist"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/1981430140/eggjs-nacos"
+  },
+  "bugs": {
+    "url": "https://github.com/1981430140/eggjs-nacos/issues"
+  },
+  "homepage": "https://github.com/1981430140/eggjs-nacos#readme",
   "license": "ISC"
 }
+

@@ -1,3 +1,9 @@
+
+const Nacos = require('./lib/nacos');
+
+/**
+ * @param {Egg.Application} app - egg application
+ */
 class AppBootHook {
   constructor(app) {
     this.app = app;
@@ -14,7 +20,7 @@ class AppBootHook {
   }
 
   async didLoad() {
-    // All files have loaded, start plugin here.
+    new Nacos(this.app);
   }
 
   async willReady() {
@@ -27,9 +33,10 @@ class AppBootHook {
   }
 
   async serverDidReady() {
-    // Server is listening.
     // 将服务监听的端口发送给agent
-    this.app.messenger.sendToAgent('egg-server-realport', this.app.server.address().port);
+    if(this.app.server){
+      this.app.messenger.sendToAgent('egg-server-realport', this.app.server.address().port);
+    }
   }
 
   async beforeClose() {

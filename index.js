@@ -11,8 +11,8 @@ const defualtPath = __dirname + '/nacos.env';
  * @returns 会设置到环境变量的数据
  */
 const fetchRemoteNacosConfig = async (clintOptions, configOptions) => {
-  assert(clintOptions, '参数 clintOptions 必传!');
-  assert(Array.isArray(configOptions), '参数 configs 必须是个Array!');
+  assert(clintOptions, '[eggjs-nacos] Property ‘clintOptions’ is required!');
+  assert(Array.isArray(configOptions), '[eggjs-nacos] Property ‘configs’ must is Array!');
 
   const configClient = new NacosConfigClient(clintOptions);
   const config = {
@@ -22,10 +22,10 @@ const fetchRemoteNacosConfig = async (clintOptions, configOptions) => {
   try {
     const configTasks = [];
     configOptions.forEach(item => {
-      assert(Object.prototype.toString.call(item) === '[object Object]', `${item} 必须是一个Object`);
+      assert(Object.prototype.toString.call(item) === '[object Object]', `[eggjs-nacos] Property ‘${item}’ must is Object!`);
       const { dataId, group } = item;
-      assert(dataId, 'dataId 不能为空');
-      assert(group, 'group 不能为空');
+      assert(dataId, '[eggjs-nacos] Property ‘dataId’ is required!');
+      assert(group, '[eggjs-nacos] Property ‘group’ is required!');
       configTasks.push(configClient.getConfig(dataId, group))
     });
     

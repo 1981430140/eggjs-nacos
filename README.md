@@ -4,7 +4,7 @@
 $ npm i eggjs-nacos --save
 ```
 
-## 使用
+## 开启插件
 
 ```js
 // {app_root}/config/plugin.js
