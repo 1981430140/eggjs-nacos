@@ -6,18 +6,18 @@ const defualtPath = __dirname + '/nacos.env';
 
 /**
  * 获取远程Nacos配置
- * @param {*} clintOptions 连接nacos的参数
+ * @param {*} clientOptions 连接nacos的参数
  * @param {*} configOptions 要获取的配置参数
  * @returns 会设置到环境变量的数据
  */
-const fetchRemoteNacosConfig = async (clintOptions, configOptions) => {
-  assert(clintOptions, '[eggjs-nacos] Property ‘clintOptions’ is required!');
+const fetchRemoteNacosConfig = async (clientOptions, configOptions) => {
+  assert(clientOptions, '[eggjs-nacos] Property ‘clientOptions’ is required!');
   assert(Array.isArray(configOptions), '[eggjs-nacos] Property ‘configs’ must is Array!');
 
-  const configClient = new NacosConfigClient(clintOptions);
+  const configClient = new NacosConfigClient(clientOptions);
   const config = {
-    'nacos.namespace': clintOptions.namespace || "public",
-    'nacos.serverAddr': clintOptions.serverAddr || clintOptions.endpoint,
+    'nacos.namespace': clientOptions.namespace || "public",
+    'nacos.serverAddr': clientOptions.serverAddr || clientOptions.endpoint,
   };
   try {
     const configTasks = [];
