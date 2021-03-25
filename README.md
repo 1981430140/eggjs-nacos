@@ -5,7 +5,13 @@ $ npm i eggjs-nacos --save
 ```
 
 ## 开启插件
+1. 服务注册
 
+开启插件后，启动时服务会注册到Nacos, 请确保config中 nacos.serverList 和 nacos.client 已填写。多进程下单一注册服务
+
+2. 服务发现
+
+配置 nacos.subscribers 后, 启动服务时会自动监听配置的服务。多进程下单一发现服务
 ```js
 // {app_root}/config/plugin.js
 exports.nacos = {
@@ -42,7 +48,7 @@ exports.nacos = {
 
 ## 使用
 
-test01Service 服务订阅的话将根据权重轮训向实例发起请求
+test01Service 服务已订阅的话将根据权重轮训向实例发起请求
 
 ```js
 const result = await this.ctx.nacos.test01Service.request("/tab/list"); // 默认 GET 请求
@@ -119,7 +125,7 @@ config.redis = {
 
 - `request(url, options)` 向实例发起请求.
   - url {String} url 地址
-  - options {[RequestOptions](https://www.npmjs.com/package/node-apollo)}
+  - options {[RequestOptions](https://www.npmjs.com/package/urllib#arguments)}
 - `pick()` 挑选一个实例.
 - `selectInstances()` 获取所有实例.
 
@@ -139,7 +145,3 @@ config.redis = {
 ## License
 
 [BSD-2-Clause](LICENSE)
-
-```
-
-```
