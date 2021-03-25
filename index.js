@@ -12,49 +12,55 @@ const defualtPath = __dirname + '/nacos.env';
  */
 const fetchRemoteNacosConfig = async (clientOptions, configOptions) => {
   assert(clientOptions, '[eggjs-nacos] Property ‘clientOptions’ is required!');
-  assert(Array.isArray(configOptions), '[eggjs-nacos] Property ‘configs’ must is Array!');
+  assert(Array.isArray(configOptions), '[eggjs-nacos] Property ‘configOptions’ must is Array!');
 
-  const configClient = new NacosConfigClient(clientOptions);
-  const config = {
-    'nacos.namespace': clientOptions.namespace || "public",
-    'nacos.serverAddr': clientOptions.serverAddr || clientOptions.endpoint,
-  };
-  try {
-    const configTasks = [];
-    configOptions.forEach(item => {
-      assert(Object.prototype.toString.call(item) === '[object Object]', `[eggjs-nacos] Property ‘${item}’ must is Object!`);
-      const { dataId, group } = item;
-      assert(dataId, '[eggjs-nacos] Property ‘dataId’ is required!');
-      assert(group, '[eggjs-nacos] Property ‘group’ is required!');
-      configTasks.push(configClient.getConfig(dataId, group))
-    });
-    
-    const configs = await Promise.all(configTasks);
-    
-    configs.forEach(item => {
-      try {
-        item = JSON.parse(item);
-        if (Object.prototype.toString.call(item) === '[object Object]') {
-          Object.assign(config, item);
-        }
-      } catch (error) {
+  const config = {};
+
+  for (const options of configOptions) {
+    assert(Object.prototype.toString.call(options) === '[object Object]', `[eggjs-nacos] Property ‘${options}’ must is Object!`);
+    const namespace = options.namespace || clientOptions.namespace;
+    assert(namespace, '[eggjs-nacos] Property ‘namespace’ is required!');
+    assert(options.configs, '[eggjs-nacos] Property ‘configs’ is required!');
+    const configClient = new NacosConfigClient({ ...clientOptions, namespace });
+    try {
+      const configTasks = [];
+
+      options.configs.forEach(item => {
+        assert(Object.prototype.toString.call(item) === '[object Object]', `[eggjs-nacos] Property ‘${item}’ must is Object!`);
+        const { dataId, group } = item;
+        assert(dataId, '[eggjs-nacos] Property ‘dataId’ is required!');
+        assert(group, '[eggjs-nacos] Property ‘group’ is required!');
+        configTasks.push(configClient.getConfig(dataId, group))
+      });
+
+      const configs = await Promise.all(configTasks);
+
+      configs.forEach(item => {
         try {
-          // 匹配key=val中的key和val
-          Object.assign(config, dotenv.parse(item));
+          item = JSON.parse(item);
+          if (Object.prototype.toString.call(item) === '[object Object]') {
+            Object.assign(config, item);
+          }
         } catch (error) {
-          assert(false, error);
+          try {
+            // 匹配key=val中的key和val
+            Object.assign(config, dotenv.parse(item));
+          } catch (error) {
+            assert(false, error);
+          }
         }
-      }
-    });
+      });
 
-    // 写入到 nacos.env 文件中
-    createEnvFile(config);
-  } catch(error){
-    assert(false, error);
-  } finally {
-    configClient.close();
+    } catch (error) {
+      assert(false, error);
+    } finally {
+      await configClient.close();
+    }
   }
-  
+
+  // 写入到 nacos.env 文件中
+  createEnvFile(config);
+
   return config;
 }
 

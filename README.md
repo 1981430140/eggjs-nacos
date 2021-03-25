@@ -5,13 +5,15 @@ $ npm i eggjs-nacos --save
 ```
 
 ## 开启插件
+
 1. 服务注册
 
-开启插件后，启动时服务会注册到Nacos, 请确保config中 nacos.serverList 和 nacos.client 已填写。多进程下单一注册服务
+开启插件后，启动时服务会注册到 Nacos, 请确保 config 中 nacos.serverList 和 nacos.client 已填写。多进程下单一注册服务
 
 2. 服务发现
 
 配置 nacos.subscribers 后, 启动服务时会自动监听配置的服务。多进程下单一发现服务
+
 ```js
 // {app_root}/config/plugin.js
 exports.nacos = {
@@ -67,7 +69,10 @@ const options = {
   timeout: 30000,
   data: { a: "11", b: "22" },
 };
-const result = await this.ctx.nacos.test02Service.request( "/tab/create", options );
+const result = await this.ctx.nacos.test02Service.request(
+  "/tab/create",
+  options
+);
 if (result.status !== 200) throw Error("Error ...");
 console.log(result.data);
 ```
@@ -77,25 +82,41 @@ console.log(result.data);
 具体用法和 [node-apollo](https://www.npmjs.com/package/node-apollo) 使用一样
 
 {app_root}/nacos.js
+
 ```js
 const { fetchRemoteNacosConfig } = require("eggjs-nacos");
-fetchRemoteNacosConfig({
-  serverAddr: "127.0.0.1:8848",
-  namespace: "dev", // 命名空间ID
-}, [
+fetchRemoteNacosConfig(
   {
-    dataId: "com.test.mysql",
-    group: "DEFAULT_GROUP",
+    serverAddr: "127.0.0.1:8848",
+    namespace: "dev", // 命名空间ID
   },
-  {
-    dataId: "com.test.redis",
-    group: "DEFAULT_GROUP",
-  },
-]).then(data => {
+  [
+    {
+      namespace: "public", // 命名空间ID， 优先使用这里配置的命名空间ID
+      configs: [
+        {
+          dataId: "com.dq.redis",
+          group: "DEFAULT_GROUP",
+        },
+      ],
+    },
+    {
+      // 未配置命名空间的话默认使用上面的 dev
+      configs: [
+        {
+          dataId: "com.dq.test",
+          group: "DEFAULT_GROUP",
+        },
+      ],
+    },
+  ]
+).then((data) => {
   console.log("env：", data);
-})
+});
 ```
+
 {app_root}/package.json
+
 ```js
 ...
 "scripts": {
@@ -106,6 +127,7 @@ fetchRemoteNacosConfig({
 ```
 
 {app_root}/config/config.default.ts
+
 ```js
 ...
 config.redis = {
@@ -136,8 +158,10 @@ config.redis = {
     - serverAddr {String} nacos 服务地址
     - namespace {String} 命名空间 ID
   - configOptions {Array}
-    - dataId {String}
-    - group {String} 分组
+    - namespace {String} 命名空间 ID, 优先使用
+    - configs {Array}
+      - dataId {String}
+      - group {String} 分组
 - `createEnvFile(config)` 将配置信息写入到文件
   - config {Object}
 - `setEnv()` 注入到环境变量
