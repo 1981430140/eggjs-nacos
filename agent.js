@@ -80,15 +80,20 @@ class AppBootHook {
 
   async beforeClose() {
     //在应用关闭之前先干点事
-    try {
-      const { serviceName, groupName, ip, port } = this.app.config.nacos.client;
-      this.app.logger.info('[eggjs-nacos] 注销参数', serviceName, ip, port, groupName);
-      await this.app.nacosClient.deregisterInstance(serviceName, { ip, port }, groupName)
-      this.app.logger.info('[eggjs-nacos] 注销成功')
-    } catch (error) {
-      this.app.logger.info('[eggjs-nacos] 注销失败 ERROR', error)
+    if(this.app.nacosClient){
+      try {
+        const { serviceName, groupName, ip, port } = this.app.config.nacos.client;
+        if(serviceName && ip && port){
+          this.app.logger.info('[eggjs-nacos] 注销参数', serviceName, ip, port, groupName);
+          await this.app.nacosClient.deregisterInstance(serviceName, { ip, port }, groupName)
+          this.app.logger.info('[eggjs-nacos] 注销成功')
+        }
+      } catch (error) {
+        this.app.logger.info('[eggjs-nacos] 注销失败 ERROR', error)
+      } finally {
+        await this.app.nacosClient.close();
+      }
     }
-    await this.app.nacosClient.close();
   }
 }
 
