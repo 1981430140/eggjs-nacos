@@ -32,7 +32,7 @@ class AppBootHook {
     const nacosClient = new NacosNamingClient({
       logger: this.app.logger,
       serverList,
-      namespace: client.namespace,
+      ...client,
     })
 
     await nacosClient.ready();
@@ -48,7 +48,6 @@ class AppBootHook {
       // serviceName 不存在就拿 package.json 中的服务名
       const serviceName = client.serviceName || this.app.name;
       const groupName = client.groupName || 'DEFAULT_GROUP';
-      Object.assign(client, { serviceName, ip, port, groupName })
 
       try {
         // 注册实例 
@@ -58,7 +57,6 @@ class AppBootHook {
       } catch (error) {
         this.app.logger.error('[eggjs-nacos] 注册失败 ERROR:', error);
       }
-      this.app.logger.info('[eggjs-nacos] client', client);
       // 订阅实例
       this.app.nacosSubscribe = new Subscribe(this.app);
     });
