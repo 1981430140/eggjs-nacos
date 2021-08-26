@@ -154,9 +154,7 @@ config.redis = {
 ### config
 
 - `fetchRemoteNacosConfig(clientOptions, configOptions)` 获取远程 Nacos 配置信息
-  - clientOptions {Object}
-    - serverAddr {String} nacos 服务地址
-    - namespace {String} 命名空间 ID
+  - clientOptions {[ClientOptions]( https://github.com/nacos-group/nacos-sdk-nodejs/blob/master/packages/nacos-config/src/interface.ts#L247)}
   - configOptions {Array}
     - namespace {String} 命名空间 ID, 优先使用
     - configs {Array}
