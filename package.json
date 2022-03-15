@@ -1,6 +1,6 @@
 {
   "name": "eggjs-nacos",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "description": "Egg.js nacos插件,服务注册发现，获取配置中心",
   "author": "dq",
   "main": "index.js",
@@ -9,7 +9,7 @@
   "dependencies": {
     "dotenv": "^8.2.0",
     "egg": "^2",
-    "nacos": "^2.1.0"
+    "nacos": "^2.2.1"
   },
   "devDependencies": {
     "egg-bin": "^4.13.1"
