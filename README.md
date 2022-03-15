@@ -128,6 +128,25 @@ fetchRemoteNacosConfig(
 ...
 ```
 
+读取配置设置到环境变量的两种方式
+
+
+```js
+// {app_root}/config/plugin.js
+...
+exports.nacos = {
+  enable: true,
+  package: "eggjs-nacos",
+};
+...
+
+// 或者 {app_root}/config/config.default.ts
+...
+require('eggjs-nacos').setEnv();
+...
+```
+
+从环境变量中读取配置使用
 {app_root}/config/config.default.ts
 
 ```js
