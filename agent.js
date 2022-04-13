@@ -25,7 +25,7 @@ class AppBootHook {
 
   async didLoad() {
     //所有文件都已加载，请在此处启动插件。
-    const { serverList, client } = this.app.config.nacos;
+    const { serverList, client, isRegisterInstance } = this.app.config.nacos;
     assert(!!serverList, '[eggjs-nacos] Property ‘serverList’ is required!');
     assert(!!client.namespace, '[eggjs-nacos] Property ‘namespace’ is required!');
 
@@ -42,25 +42,32 @@ class AppBootHook {
     this.app.messenger.once('egg-server-realport', async port => {
       this.app.logger.info('[eggjs-nacos] egg-server-realport:', port);
 
-      // 获取服务ip
-      const ip = address();
+      // 是否注册实例
+      if (isRegisterInstance) {
+        // 获取服务ip
+        const ip = address();
 
-      // serviceName 不存在就拿 package.json 中的服务名
-      const serviceName = client.serviceName || this.app.name;
-      const groupName = client.groupName || 'DEFAULT_GROUP';
+        // serviceName 不存在就拿 package.json 中的服务名
+        const serviceName = client.serviceName || this.app.name;
+        const groupName = client.groupName || 'DEFAULT_GROUP';
+        // 注销注册时使用
+        Object.assign(client, { serviceName, ip, port, groupName })
 
-      try {
-        // 注册实例 
-        this.app.logger.info('[eggjs-nacos] 注册参数', serviceName, ip, port, groupName);
-        await nacosClient.registerInstance(serviceName, { ip, port }, groupName);
-        this.app.logger.info('[eggjs-nacos] 注册成功');
-      } catch (error) {
-        this.app.logger.error('[eggjs-nacos] 注册失败 ERROR:', error);
+        try {
+          // 注册实例 
+          this.app.logger.info('[eggjs-nacos] 注册参数', serviceName, ip, port, groupName);
+          await nacosClient.registerInstance(serviceName, { ip, port }, groupName);
+          this.app.logger.info('[eggjs-nacos] 注册成功');
+        } catch (error) {
+          this.app.logger.error('[eggjs-nacos] 注册失败 ERROR:', error);
+        }
+      } else {
+        this.app.logger.info(`[eggjs-nacos] 配置 isRegisterInstance: ${isRegisterInstance} ，已关闭默认注册实例`);
       }
       // 订阅实例
       this.app.nacosSubscribe = new Subscribe(this.app);
     });
-  
+
   }
 
   async willReady() {
@@ -78,10 +85,10 @@ class AppBootHook {
 
   async beforeClose() {
     //在应用关闭之前先干点事
-    if(this.app.nacosClient){
+    if (this.app.nacosClient) {
       try {
-        const { serviceName, groupName, ip, port } = this.app.config.nacos.client;
-        if(serviceName && ip && port){
+        const { isRegisterInstance, client: { serviceName, groupName, ip, port } } = this.app.config.nacos;
+        if (isRegisterInstance && serviceName && ip && port) {
           this.app.logger.info('[eggjs-nacos] 注销参数', serviceName, ip, port, groupName);
           await this.app.nacosClient.deregisterInstance(serviceName, { ip, port }, groupName)
           this.app.logger.info('[eggjs-nacos] 注销成功')

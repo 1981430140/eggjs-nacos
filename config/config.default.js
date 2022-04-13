@@ -12,6 +12,7 @@ module.exports = () => {
   
   config.nacos = {
     serverList: '',
+    isRegisterInstance: true, // 是否注册实例， 默认true （v1.1.8 加入配置）
     client: {
       namespace: '',
       serviceName: '',

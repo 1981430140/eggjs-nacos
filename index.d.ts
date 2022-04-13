@@ -28,12 +28,13 @@ declare module "egg" {
     interface EggAppConfig {
         nacos: {
             serverList: string, // nacos 地址，多个用逗号隔开
+            isRegisterInstance?: Boolean, // 是否注册实例， 默认 true
             client: {
                 namespace: string, // 命名空间ID
                 serviceName?: string, // 服务名称
                 groupName?: string, // 分组
-                username?: tring,
-                password?: tring,
+                username?: string,
+                password?: string,
                 [key: string]: any;
             },
             subscribers: {

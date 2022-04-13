@@ -28,6 +28,7 @@ exports.nacos = {
 // {app_root}/config/config.default.js
 exports.nacos = {
   serverList: "", // 必填，  nacos 服务url
+  isRegisterInstance: true, // 非必填，  是否注册实例， 默认 true
   client: {
     namespace: "", // 必填，  命名空间ID，用于后续服务注册、服务发现
     serviceName: "", // 非必填, 服务名称， 默认自动获取package.json中的name
